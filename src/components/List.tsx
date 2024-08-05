@@ -1,5 +1,4 @@
 import { Lead, toggleStatus } from '@/store/leads';
-import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 
@@ -25,7 +24,7 @@ export default function List() {
         {leads.map(({ id, name, submitted, status, country }: Lead) => (
           <tr key={id}>
             <td className="px-6 py-4 whitespace-nowrap">{name}</td>
-            <td className="px-6 py-4 whitespace-nowrap">{moment(submitted).format('MM/DD/YYYY, h:mmA')}</td>
+            <td className="px-6 py-4 whitespace-nowrap">{submitted}</td>
             <td className="px-6 py-4 whitespace-nowrap">
               <a onClick={() => handleClick(id)} className='cursor-pointer bg-gray-300 rounded-full px-2 py-1'>{status}</a>
             </td>

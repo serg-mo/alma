@@ -1,8 +1,13 @@
+import { STATUSES } from '@/constants';
 import { addLead } from '@/store/leads';
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers';
 import { JsonForms } from '@jsonforms/react';
+import { ErrorObject } from 'ajv';
+import moment from 'moment';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'country'];
 
 const schema = {
   type: 'object',
@@ -23,7 +28,6 @@ const schema = {
     },
     comments: { type: 'string', title: 'Comments' }
   },
-  // required: ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'country', 'comments']
 };
 
 const uiSchema = {
@@ -62,24 +66,39 @@ export default function MyForm() {
   const dispatch = useDispatch();
   const [data, setData] = useState<any>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [errors, setErrors] = useState<any>([]);
+  const [additionalErrors, setAdditionalErrors] = useState<ErrorObject[]>([]);
 
-  const handleChange = ({ data, errors }: any) => {
-    // only 
-    if (Object.keys(data).length) {
-      setData(data);
-      setErrors(errors);
+  const validate = () => {
+    const errors: ErrorObject[] = [];
+
+    REQUIRED_FIELDS.forEach(field => {
+      if (!data[field] || data[field].trim() === '') {
+        errors.push({
+          instancePath: `/${field}`,
+          message: `${field} is required`,
+          schemaPath: '',
+          keyword: '',
+          params: {},
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      setAdditionalErrors(errors);
+      return false;
     }
+
+    return true;
   };
 
   const handleSubmit = () => {
-    if (errors.length === 0) {
+    if (validate()) {
       const newLead = {
         id: Date.now(),
         name: `${data.firstName} ${data.lastName}`,
-        submitted: new Date(),
+        submitted: moment().format('MM/DD/YYYY, h:mmA'),
         country: data.country,
-        status: 'PENDING', // NOTE: initial state
+        status: STATUSES.PENDING, // NOTE: initial state
       };
 
       dispatch(addLead(newLead));
@@ -99,7 +118,9 @@ export default function MyForm() {
         data={data}
         renderers={materialRenderers}
         cells={materialCells}
-        onChange={handleChange}
+        onChange={({ data }) => setData(data)}
+        validationMode="NoValidation"
+        additionalErrors={additionalErrors}
       />
       <button
         type="button"
