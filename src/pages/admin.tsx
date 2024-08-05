@@ -1,3 +1,4 @@
+import List from '@/components/List';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -31,7 +32,7 @@ export default function Admin() {
     <>
       <Link href="/" className="text-blue-600 underline hover:no-underline">Form</Link>
       <h1 className="text-2xl font-bold mb-4">Admin</h1>
-      TODO: list here
+      <List />
     </>
   );
 }
