@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const mockAuth = (resp: boolean) => {
@@ -19,7 +20,7 @@ export default function Admin() {
   }, []);
 
   if (authenticated === null) {
-    return <div>Loading...</div>;
+    return <div>Authenticating...</div>;
   }
 
   if (!authenticated) {
@@ -27,8 +28,10 @@ export default function Admin() {
   }
 
   return (
-    <div>
-      <h1>Admin</h1>
-    </div>
+    <>
+      <Link href="/" className="text-blue-600 underline hover:no-underline">Form</Link>
+      <h1 className="text-2xl font-bold mb-4">Admin</h1>
+      TODO: list here
+    </>
   );
 }

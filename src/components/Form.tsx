@@ -2,7 +2,6 @@ import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react';
 import { useState } from 'react';
 
-// Update the schema for visas
 const schema = {
   type: 'object',
   properties: {
@@ -13,15 +12,14 @@ const schema = {
     visas: {
       type: 'string',
       title: 'Visas you are interested in',
-      enum: ['A', 'B', 'C']
+      enum: ['O1', 'EB-1A', 'EB-2', "I don't know"]
     },
-    resume: { type: 'string', format: 'data-url', title: 'Resume / CV' },
+    // resume: { type: 'string', format: 'data-url', title: 'Resume / CV' },
     comments: { type: 'string', title: 'Comments' }
   },
-  required: ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'resume', 'comments']
+  // required: ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'resume', 'comments']
 };
 
-// Update the uischema for visas to use radio buttons
 const uischema = {
   type: 'VerticalLayout',
   elements: [
@@ -36,7 +34,7 @@ const uischema = {
         format: 'radio'
       }
     },
-    { type: 'Control', scope: '#/properties/resume' },
+    // { type: 'Control', scope: '#/properties/resume' },
     { type: 'Control', scope: '#/properties/comments' }
   ]
 };
@@ -53,30 +51,27 @@ export default function MyForm() {
     setSubmitted(true);
   };
 
+  if (submitted) {
+    return (<div className="text-center">Thank you for your submission!</div>)
+  }
+
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      {submitted ? (
-        <div className="text-center">Thank you for your submission!</div>
-      ) : (
-        <div className="w-full max-w-lg p-6 bg-white rounded shadow-md">
-          <h1 className="text-2xl font-bold mb-4 text-center">Application Form</h1>
-          <JsonForms
-            schema={schema}
-            uischema={uischema}
-            data={data}
-            renderers={materialRenderers}
-            cells={materialCells}
-            onChange={({ data }) => handleChange(data)}
-          />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="w-full mt-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-          >
-            Submit
-          </button>
-        </div>
-      )}
-    </div>
+    <>
+      <JsonForms
+        schema={schema}
+        uischema={uischema}
+        data={data}
+        renderers={materialRenderers}
+        cells={materialCells}
+        onChange={({ data }) => handleChange(data)}
+      />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        className="w-full mt-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+      >
+        Submit
+      </button>
+    </>
   );
 }
