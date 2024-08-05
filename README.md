@@ -18,3 +18,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## TODO
 - Improve form validation rules
 - Add file upload input for resume
+- Country should be a dropdown, but text is easier to test

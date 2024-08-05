@@ -15,17 +15,13 @@ const schema = {
     firstName: { type: 'string', title: 'First Name' },
     lastName: { type: 'string', title: 'Last Name' },
     email: { type: 'string', format: 'email', title: 'Email' },
-    linkedin: { type: 'string', title: 'LinkedIn' },
+    linkedin: { type: 'string', title: 'LinkedIn' }, // TODO: add format
     visas: {
       type: 'string',
       title: 'Visas',
       enum: ['O1', 'EB-1A', 'EB-2', "I don't know"]
     },
-    country: {
-      type: 'string',
-      title: 'Country',
-      enum: ['USA', 'Ukraine', 'Mexico', "Canada"]
-    },
+    country: { type: 'string', title: 'Country' },
     comments: { type: 'string', title: 'Comments' }
   },
 };
@@ -44,13 +40,7 @@ const uiSchema = {
         format: 'radio'
       }
     },
-    {
-      type: 'Control',
-      scope: '#/properties/country',
-      options: {
-        format: 'select'
-      }
-    },
+    { type: 'Control', scope: '#/properties/country', },
     {
       type: 'Control',
       scope: '#/properties/comments',
