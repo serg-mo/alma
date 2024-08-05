@@ -21,7 +21,11 @@ export default function List() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
 
   const handleClick = (id: number) => {
-    console.log(`click ${id}`)
+    setLeads(leads.map(lead =>
+      lead.id === id
+        ? { ...lead, status: lead.status === STATUSES.PENDING ? STATUSES.REACHED_OUT : STATUSES.PENDING }
+        : lead
+    ));
   };
 
   return (
@@ -36,11 +40,13 @@ export default function List() {
       </thead>
       <tbody className="bg-white divide-y divide-gray-200 text-sm font-medium">
         {leads.map(({ id, name, submitted, status, country }: Lead) => (
-          <tr key={id} onClick={() => handleClick(id)}>
+          <tr key={id}>
             <td className="px-6 py-4 whitespace-nowrap">{name}</td>
             <td className="px-6 py-4 whitespace-nowrap">{moment(submitted).format('MM/DD/YYYY, h:mmA')}</td>
-            <td className="px-6 py-4 whitespace-nowrap">{status}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{country}</td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              <a onClick={() => handleClick(id)} className='cursor-pointer'>{status}</a>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">{country}</td>
           </tr>
         ))}
       </tbody>
