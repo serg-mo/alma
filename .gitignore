@@ -1,0 +1,23 @@
+# Dependency directories
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# TypeScript build output
+dist/
+*.tsbuildinfo
+
+# Log files
+npm-debug.log*
+
+.env
+
+# Vercel deployment
+.vercel/
+
+# MacOS files
+.DS_Store
