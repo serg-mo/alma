@@ -1,6 +1,8 @@
+import { addLead } from '@/store/leads';
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers';
 import { JsonForms } from '@jsonforms/react';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const schema = {
   type: 'object',
@@ -11,16 +13,20 @@ const schema = {
     linkedin: { type: 'string', title: 'LinkedIn' },
     visas: {
       type: 'string',
-      title: 'Visas you are interested in',
+      title: 'Visas',
       enum: ['O1', 'EB-1A', 'EB-2', "I don't know"]
     },
-    // resume: { type: 'string', format: 'data-url', title: 'Resume / CV' },
+    country: {
+      type: 'string',
+      title: 'Country',
+      enum: ['USA', 'Ukraine', 'Mexico', "Canada"]
+    },
     comments: { type: 'string', title: 'Comments' }
   },
-  // required: ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'resume', 'comments']
+  // required: ['firstName', 'lastName', 'email', 'linkedin', 'visas', 'country', 'comments']
 };
 
-const uischema = {
+const uiSchema = {
   type: 'VerticalLayout',
   elements: [
     { type: 'Control', scope: '#/properties/firstName' },
@@ -34,21 +40,51 @@ const uischema = {
         format: 'radio'
       }
     },
-    // { type: 'Control', scope: '#/properties/resume' },
-    { type: 'Control', scope: '#/properties/comments' }
+    {
+      type: 'Control',
+      scope: '#/properties/country',
+      options: {
+        format: 'select'
+      }
+    },
+    {
+      type: 'Control',
+      scope: '#/properties/comments',
+      options: {
+        multi: true,
+        rows: 10
+      }
+    }
   ]
 };
 
 export default function MyForm() {
+  const dispatch = useDispatch();
   const [data, setData] = useState<any>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [errors, setErrors] = useState<any>([]);
 
-  const handleChange = (data: any) => {
-    setData(data);
+  const handleChange = ({ data, errors }: any) => {
+    // only 
+    if (Object.keys(data).length) {
+      setData(data);
+      setErrors(errors);
+    }
   };
 
   const handleSubmit = () => {
-    setSubmitted(true);
+    if (errors.length === 0) {
+      const newLead = {
+        id: Date.now(),
+        name: `${data.firstName} ${data.lastName}`,
+        submitted: new Date(),
+        country: data.country,
+        status: 'PENDING', // NOTE: initial state
+      };
+
+      dispatch(addLead(newLead));
+      setSubmitted(true);
+    }
   };
 
   if (submitted) {
@@ -56,14 +92,14 @@ export default function MyForm() {
   }
 
   return (
-    <>
+    <div className="max-w-md mx-auto">
       <JsonForms
         schema={schema}
-        uischema={uischema}
+        uischema={uiSchema}
         data={data}
         renderers={materialRenderers}
         cells={materialCells}
-        onChange={({ data }) => handleChange(data)}
+        onChange={handleChange}
       />
       <button
         type="button"
@@ -72,6 +108,6 @@ export default function MyForm() {
       >
         Submit
       </button>
-    </>
+    </div>
   );
 }

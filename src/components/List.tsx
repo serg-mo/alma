@@ -1,31 +1,14 @@
+import { Lead, toggleStatus } from '@/store/leads';
 import moment from 'moment';
-import { useState } from 'react';
-import { STATUSES } from "../constants";
-
-interface Lead {
-  id: number;
-  name: string;
-  submitted: Date;
-  country: string;
-  status: string;
-}
-
-const initialLeads: Lead[] = [
-  { id: 1, name: 'John Doe', submitted: new Date(), country: "Ukraine", status: STATUSES.PENDING },
-  { id: 2, name: 'Jane Smith', submitted: new Date(), country: "Poland", status: STATUSES.REACHED_OUT },
-  { id: 3, name: 'Bob Johnson', submitted: new Date(), country: "Lithuania", status: STATUSES.PENDING },
-];
-
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
 
 export default function List() {
-  const [leads, setLeads] = useState<Lead[]>(initialLeads);
+  const dispatch = useDispatch<AppDispatch>();
+  const leads = useSelector((state: RootState) => state.leads.leads);
 
   const handleClick = (id: number) => {
-    setLeads(leads.map(lead =>
-      lead.id === id
-        ? { ...lead, status: lead.status === STATUSES.PENDING ? STATUSES.REACHED_OUT : STATUSES.PENDING }
-        : lead
-    ));
+    dispatch(toggleStatus(id));
   };
 
   return (
@@ -44,7 +27,7 @@ export default function List() {
             <td className="px-6 py-4 whitespace-nowrap">{name}</td>
             <td className="px-6 py-4 whitespace-nowrap">{moment(submitted).format('MM/DD/YYYY, h:mmA')}</td>
             <td className="px-6 py-4 whitespace-nowrap">
-              <a onClick={() => handleClick(id)} className='cursor-pointer'>{status}</a>
+              <a onClick={() => handleClick(id)} className='cursor-pointer bg-gray-300 rounded-full px-2 py-1'>{status}</a>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">{country}</td>
           </tr>
